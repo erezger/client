@@ -1,2 +1,53 @@
-<h1>Hi {{currentUser.username}}!</h1>
+<h1>Hi {{currentUser.data.username}}!</h1>
 <h3>Thank You!!!</h3>
+
+<h3>All tasks:</h3>
+<table class="table table-striped table-bordered">
+  <thead>
+  <tr>
+    <th>Task Description</th>
+    <th>Task Due Date</th>
+    <th>Task Status</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let task of tasks">
+    <td>{{task.description}} </td>
+    <td>{{task.dueDate | date }}</td>
+    <td>{{task.status}}</td>
+    <td>
+      <a *ngIf="task.status !== 'PROGRESS'" (click)="updateTaskStatus(task, 'PROGRESS')"
+         class="text-primary">In Progress</a>
+      <a *ngIf="task.status === 'PROGRESS'" (click)="updateTaskStatus(task, 'DONE')" class="text-success">Done / </a>
+      <a *ngIf="task.status === 'PROGRESS'" (click)="updateTaskStatus(task, 'CREATED')" class="text-danger">
+        stop progress</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="description">Description</label>
+    <input type="text" formControlName="description" class="form-control"
+           [ngClass]="{ 'is-invalid': submitted && f.description.errors }"/>
+    <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+      <div *ngIf="f.description.errors.required">Description is required</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="dueDate">Due Date</label>
+    <input type="date" formControlName="dueDate" class="form-control"
+           [ngClass]="{ 'is-invalid': submitted && f.dueDate.errors }"/>
+    <div *ngIf="submitted && f.dueDate.errors" class="invalid-feedback">
+      <div *ngIf="f.dueDate.errors.required">Due date is required</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <button [disabled]="loading" class="btn btn-primary">
+      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+      Create Task
+    </button>
+  </div>
+</form>

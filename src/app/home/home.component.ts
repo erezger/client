@@ -58,6 +58,10 @@ export class HomeComponent implements OnInit {
       .subscribe(
         data => {
           this.alertService.success('task added successfully!!', true);
+          this.taskForm.reset();
+          this.submitted = false;
+          this.loading = false;
+          this.loadAllTasks();
         },
         error => {
           this.alertService.error(error);

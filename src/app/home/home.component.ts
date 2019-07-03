@@ -6,11 +6,13 @@ import {TaskService} from '../services/task.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertService} from '../services/alert.service';
 import {Task} from '../models/task';
+import {UserService} from '../services/user.service';
 
 @Component({templateUrl: 'home.component.html'})
 export class HomeComponent implements OnInit {
   currentUser: User;
   tasks = [];
+  users = [];
   taskForm: FormGroup;
   loading = false;
   submitted = false;
@@ -18,6 +20,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
+    private userService: UserService,
     private taskService: TaskService,
     private alertService: AlertService
   ) {
@@ -25,10 +28,12 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadAllUsers();
     this.loadAllTasks();
     this.taskForm = this.formBuilder.group({
       description: ['', Validators.required],
-      dueDate: [Date, Validators.required]
+      dueDate: [Date, Validators.required],
+      assigneeTo: ['', Validators.required],
     });
   }
 
@@ -52,6 +57,7 @@ export class HomeComponent implements OnInit {
     const newTask = {
       description: this.f.description.value,
       dueDate: this.f.dueDate.value,
+      assigneeTo: this.f.assigneeTo.value,
     } as Task;
     this.taskService.createTask(newTask)
       .pipe(first())
@@ -87,6 +93,18 @@ export class HomeComponent implements OnInit {
       .pipe(first())
       .subscribe((tasks: any) => {
           this.tasks = tasks;
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+        });
+  }
+
+  private loadAllUsers() {
+    this.userService.getAllUsers()
+      .pipe(first())
+      .subscribe((users: any) => {
+          this.users = users;
         },
         error => {
           this.alertService.error(error);

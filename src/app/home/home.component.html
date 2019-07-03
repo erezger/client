@@ -9,17 +9,21 @@
   <table class="table table-dark table-striped table-bordered">
     <thead>
     <tr>
+      <th>Reporter</th>
       <th>Task Description</th>
       <th>Task Due Date</th>
       <th>Task Status</th>
+      <th>Assignee To</th>
       <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let task of tasks">
+      <td>{{task.reporter ? task.reporter.username : ''}}</td>
       <td>{{task.description}} </td>
       <td>{{task.dueDate | date }}</td>
       <td>{{task.status}}</td>
+      <td>{{task.assigneeTo ? task.assigneeTo.username : ''}}</td>
       <td>
         <a *ngIf="task.status !== 'PROGRESS'" (click)="updateTaskStatus(task, 'PROGRESS')"
            class="text-primary">In Progress</a>
@@ -54,6 +58,17 @@
                [ngClass]="{ 'is-invalid': submitted && f.dueDate.errors }"/>
         <div *ngIf="submitted && f.dueDate.errors" class="invalid-feedback">
           <div *ngIf="f.dueDate.errors.required">Due date is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="assigneeTo">Assignee</label>
+        <select formControlName="assigneeTo" id="assignee" class="form-control">
+          <option *ngFor="let user of users; let i = index" [value]="user._id">
+            {{user.username}}
+          </option>
+        </select>
+        <div *ngIf="submitted && f.assigneeTo.errors" class="invalid-feedback">
+          <div *ngIf="f.assigneeTo.errors.required">Assignee to is required</div>
         </div>
       </div>
       <div class="form-group">

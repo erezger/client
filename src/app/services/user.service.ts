@@ -11,4 +11,8 @@ export class UserService {
   register(user: User) {
     return this.http.post(fakeBackendProvider.baseurl + 'register', user);
   }
+
+  getAllUsers() {
+    return this.http.get(fakeBackendProvider.baseurl + 'api/users');
+  }
 }

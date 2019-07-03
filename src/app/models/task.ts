@@ -3,4 +3,6 @@ export class Task {
   description: string;
   status: string;
   dueDate: Date;
+  reporter?: string;
+  assigneeTo?: string;
 }
